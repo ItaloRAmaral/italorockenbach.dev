@@ -1,0 +1,53 @@
+name: Sync content from knowledge base
+
+on:
+  repository_dispatch:
+    types: [knowledge-base-updated]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout engineering-record
+        uses: actions/checkout@v4
+
+      - name: Checkout professional-knowledge-base
+        uses: actions/checkout@v4
+        with:
+          repository: ItaloRAmaral/professional-knowledge-base
+          token: ${{ secrets.PERSONAL_GH_PAT }}
+          path: knowledge-base-v2
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install knowledge-base-v2 generator dependencies
+        working-directory: knowledge-base-v2
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate content.ts
+        run: node knowledge-base-v2/scripts/generate-content.mjs src/data/content.ts
+
+      - name: Install site dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build (fails the job if generated content breaks the build)
+        run: pnpm build
+
+      - name: Commit regenerated content
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/content.ts
+          git diff --cached --quiet || git commit -m "chore: sync content from knowledge base"
+          git push
