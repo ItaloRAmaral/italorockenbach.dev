@@ -1,0 +1,29 @@
+.section {
+  margin-top: 56px;
+}
+
+.list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.list li {
+  display: flex;
+  gap: 10px;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--text-dim);
+  max-width: 64ch;
+}
+
+.marker {
+  flex: none;
+  color: var(--text-faint);
+}
+
+.marker[data-variant="plus"] {
+  color: var(--accent);
+  font-weight: 700;
+}

@@ -1,0 +1,27 @@
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: 999px;
+  padding: 8px 14px;
+  text-decoration: none;
+}
+
+.pill:hover {
+  border-color: var(--accent);
+  text-decoration: none;
+}
+
+.name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.period {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+}

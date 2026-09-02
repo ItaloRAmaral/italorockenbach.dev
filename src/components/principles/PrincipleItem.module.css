@@ -1,0 +1,79 @@
+.item {
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 4px 24px;
+}
+
+.item + .item {
+  margin-top: 12px;
+}
+
+.summary {
+  list-style: none;
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 18px 0;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 16.5px;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.number {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.text {
+  text-wrap: balance;
+}
+
+.body {
+  padding: 0 0 24px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.explanation {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-dim);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.key {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.value {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text-dim);
+}
+
+.link {
+  align-self: flex-start;
+  font-size: 13.5px;
+  color: var(--accent);
+}

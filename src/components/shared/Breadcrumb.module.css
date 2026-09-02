@@ -1,0 +1,16 @@
+.crumb {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.crumb a {
+  color: var(--text-faint);
+}
+
+.crumb a:hover {
+  color: var(--accent);
+}

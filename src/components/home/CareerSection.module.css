@@ -1,0 +1,54 @@
+.section {
+  margin-top: 68px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  display: block;
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+  text-decoration: none;
+}
+
+.card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.16);
+  text-decoration: none;
+}
+
+.top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--text);
+}
+
+.period {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+.desc {
+  font-size: 13.5px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}

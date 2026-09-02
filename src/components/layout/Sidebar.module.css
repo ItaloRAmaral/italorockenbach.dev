@@ -1,0 +1,106 @@
+.sidebar {
+  width: var(--sidebar-w);
+  flex: none;
+  border-right: 1px solid var(--border);
+  padding: 26px 22px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+}
+
+.brand {
+  margin-bottom: 36px;
+}
+
+.name {
+  font-weight: 600;
+  font-size: 14.5px;
+  line-height: 1.3;
+}
+
+.role {
+  font-size: 11.5px;
+  color: var(--text-faint);
+  margin-top: 3px;
+}
+
+.navGroup {
+  margin-bottom: 24px;
+}
+
+.navGroupLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 10px;
+  padding: 0 12px;
+}
+
+.navLink {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-dim);
+  text-decoration: none;
+}
+
+.navLink:hover {
+  background: var(--border-soft);
+  color: var(--text);
+}
+
+.navLink[data-current="true"] {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.navLink[data-current="true"]::before {
+  content: "";
+  position: absolute;
+  left: -2px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 16px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+.navDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.5;
+  flex: none;
+}
+
+.foot {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rev {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-faint);
+}
+
+@media (max-width: 860px) {
+  .sidebar {
+    display: none;
+  }
+}

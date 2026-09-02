@@ -1,0 +1,25 @@
+.quote {
+  margin-top: 68px;
+  padding: 26px 0 0;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--text-dim);
+  max-width: 56ch;
+  position: relative;
+  padding-left: 44px;
+}
+
+.quote::before {
+  content: "\201C";
+  position: absolute;
+  left: -4px;
+  top: 14px;
+  font-size: 64px;
+  font-style: normal;
+  color: var(--accent);
+  opacity: 0.28;
+  line-height: 1;
+}

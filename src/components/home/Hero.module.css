@@ -1,0 +1,83 @@
+.hero {
+  padding-top: 0;
+}
+
+.name {
+  font-size: clamp(32px, 4.6vw, 46px);
+  font-weight: 600;
+  line-height: 1.14;
+  margin-bottom: 10px;
+  letter-spacing: -0.005em;
+}
+
+.role {
+  font-size: 17px;
+  color: var(--text-dim);
+  font-weight: 500;
+  margin-bottom: 14px;
+}
+
+.contactRow {
+  display: flex;
+  gap: 10px;
+  margin: 0 0 28px;
+}
+
+.contactRow a {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  padding: 7px 14px;
+  border-radius: 999px;
+  text-decoration: none;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.contactRow a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+  margin: 0 0 26px;
+}
+
+.facts > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.facts dt {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.facts dd {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--text-dim);
+  font-weight: 500;
+}
+
+.thesis {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-faint);
+  max-width: 60ch;
+}
+
+.thesis strong {
+  color: var(--text-dim);
+  font-weight: 500;
+}

@@ -1,0 +1,52 @@
+.timeline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: var(--border);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 7px 64px 1fr;
+  gap: 16px;
+  align-items: baseline;
+  position: relative;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  align-self: center;
+}
+
+.year {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+.label {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.detail {
+  margin-top: 4px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text-dim);
+  max-width: 56ch;
+}

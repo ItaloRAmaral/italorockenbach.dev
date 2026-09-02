@@ -1,0 +1,58 @@
+.section {
+  margin-top: 68px;
+}
+
+.intro {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-bottom: 20px;
+  max-width: 60ch;
+  line-height: 1.6;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 15px 4px;
+  border-top: 1px solid var(--border-soft);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.row:first-child {
+  border-top: none;
+}
+
+.row:hover {
+  text-decoration: none;
+}
+
+.row:hover .title {
+  color: var(--accent);
+}
+
+.topic {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--tag-note);
+  flex: none;
+  width: 118px;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 14.5px;
+  flex: 1;
+  transition: color 0.15s ease;
+}
+
+.arrow {
+  color: var(--text-faint);
+  font-size: 13px;
+}

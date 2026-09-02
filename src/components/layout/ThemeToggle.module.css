@@ -1,0 +1,22 @@
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  cursor: pointer;
+}
+
+.toggle:hover {
+  color: var(--text);
+  border-color: var(--text-faint);
+}
+
+.toggle svg {
+  width: 15px;
+  height: 15px;
+}

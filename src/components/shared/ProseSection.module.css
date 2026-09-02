@@ -1,0 +1,14 @@
+.section {
+  margin-top: 56px;
+}
+
+.paragraph {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--text-dim);
+  max-width: 66ch;
+}
+
+.paragraph + .paragraph {
+  margin-top: 14px;
+}

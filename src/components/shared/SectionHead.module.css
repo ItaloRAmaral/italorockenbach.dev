@@ -1,0 +1,17 @@
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.head h2 {
+  font-size: 21px;
+  font-weight: 600;
+}
+
+.meta {
+  font-size: 13px;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+}

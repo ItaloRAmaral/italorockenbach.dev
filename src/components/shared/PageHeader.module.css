@@ -1,0 +1,16 @@
+.header {
+  margin-bottom: 44px;
+}
+
+.title {
+  font-size: clamp(28px, 4vw, 38px);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.lede {
+  font-size: 15.5px;
+  line-height: 1.7;
+  color: var(--text-dim);
+  max-width: 60ch;
+}

@@ -1,0 +1,9 @@
+.section {
+  margin-top: 68px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}

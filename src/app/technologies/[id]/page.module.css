@@ -1,0 +1,28 @@
+.title {
+  font-size: clamp(26px, 3.6vw, 32px);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.section {
+  margin-top: 40px;
+}
+
+.usage {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text-dim);
+  max-width: 62ch;
+}
+
+.pillRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.caseList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

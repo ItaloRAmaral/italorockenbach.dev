@@ -1,0 +1,37 @@
+.intro {
+  padding-top: 0;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+
+.title {
+  font-size: clamp(28px, 4vw, 38px);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.lede {
+  font-size: 15.5px;
+  line-height: 1.7;
+  color: var(--text-dim);
+  max-width: 60ch;
+  margin-bottom: 20px;
+}
+
+.oneLiner {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 19px;
+  color: var(--text);
+  border-left: 3px solid var(--accent);
+  padding-left: 18px;
+  max-width: 50ch;
+  line-height: 1.5;
+}

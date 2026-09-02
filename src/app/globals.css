@@ -1,0 +1,130 @@
+/* ---------------------------------------------------------------
+   Design tokens. Dark is the default appearance (not just an OS
+   preference fallback) — the bare :root holds the dark palette;
+   [data-theme="light"] overrides it.
+   --------------------------------------------------------------- */
+:root {
+  --bg: #14161c;
+  --panel: #191b22;
+  --card: #1d1f27;
+  --border: #2b2e38;
+  --border-soft: #23252d;
+  --text: #f0f1f4;
+  --text-dim: #a6a9b4;
+  --text-faint: #6c6f7a;
+
+  --accent: #5b9dff;
+  --accent-ink: #0b1220;
+  --accent-soft: rgba(91, 157, 255, 0.14);
+  --accent-soft-2: rgba(91, 157, 255, 0.24);
+
+  --tag-arch: #9d8cf0;
+  --tag-inc: #e2685a;
+  --tag-dist: #3fbd8a;
+  --tag-distsys: #4fd1e0;
+  --tag-note: #e0b34f;
+
+  --sidebar-w: 264px;
+  --radius: 12px;
+}
+
+:root[data-theme="light"] {
+  --bg: #f7f7f5;
+  --panel: #ffffff;
+  --card: #ffffff;
+  --border: #e4e3de;
+  --border-soft: #edece7;
+  --text: #1c1c1f;
+  --text-dim: #5c5d63;
+  --text-faint: #93949c;
+
+  --accent: #2456c9;
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(36, 86, 201, 0.08);
+  --accent-soft-2: rgba(36, 86, 201, 0.16);
+
+  --tag-arch: #6a58c4;
+  --tag-inc: #b2402f;
+  --tag-dist: #1f8a5c;
+  --tag-distsys: #0e7c8c;
+  --tag-note: #97730c;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background: var(--bg);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  font-family: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: var(--accent-soft-2);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  text-wrap: balance;
+  color: var(--text);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------------- app shell ---------------- */
+.shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+}
+
+.container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 64px 40px 140px;
+}
+
+@media (max-width: 860px) {
+  .container {
+    padding: 44px 22px 100px;
+  }
+}
