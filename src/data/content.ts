@@ -213,7 +213,7 @@ export const companies: Company[] = [
   {
     "id": "dynamox",
     "name": "Dynamox",
-    "role": "Software Engineer — one of the people the team relies on for backend architecture decisions",
+    "role": "Software Engineer",
     "period": "2023 – Present",
     "periodStartYear": 2023,
     "location": "Florianópolis, Brazil",
@@ -258,7 +258,8 @@ export const companies: Company[] = [
       "scaling-a-messaging-topic-in-production-without-data-loss",
       "closing-a-cve-gap-through-container-hardening",
       "bootstrapping-a-teams-infrastructure-from-zero",
-      "enforcing-business-rules-in-an-outbox-driven-answer-pipeline"
+      "enforcing-business-rules-in-an-outbox-driven-answer-pipeline",
+      "decommissioning-a-race-condition-workaround"
     ],
     "technologies": [
       "TypeScript",
@@ -296,7 +297,7 @@ export const companies: Company[] = [
       "Decompose a conflated decision into independent axes before comparing alternatives. Bundling \"which service\" and \"which database\" into single either/or options obscures which axis actually drives each trade-off.",
       "A dual write across two systems is not a rare failure mode — it is a certainty given enough time and traffic. Any place where \"persist\" and \"publish\" happen as two separate steps against two separate stores needs a pattern (like a transactional outbox) that makes them atomic, not just careful code.",
       "Configuration tuning resolves a symptom, not a structural cause — when the real problem is under-provisioning, it reappears under new load no matter how well the existing setup is tuned.",
-      "An \"everything is frozen\" incident is often a mechanical database problem, not an application bug — worth checking infrastructure-level causes (locks, connections) before assuming application logic."
+      "A migration isn't finished when the new path works — it's finished when the old one is deleted. The re-partitioning hop would have survived indefinitely as \"harmless\", quietly costing lag and confusing everyone who read the topology afterwards."
     ],
     "domainLabels": [
       "Industrial inspection & condition monitoring"
@@ -771,6 +772,130 @@ export const cases: CaseStudy[] = [
           "Written runbook covering the full migration procedure, including rollback.",
           "Zero message loss confirmed during and after the migration.",
           "Prior tuning-only mitigation of the same symptom, documented as a comparison point."
+        ],
+        "tables": []
+      }
+    ]
+  },
+  {
+    "id": "decommissioning-a-race-condition-workaround",
+    "featured": false,
+    "title": "Decommissioning a race-condition workaround and hardening its replacement",
+    "company": "dynamox",
+    "category": "distributed-systems",
+    "summary": "Partnered on the design that gave a customer-facing route completion metric a single computation path, then owned the two halves that make such a migration real — deleting the Kafka re-partitioning hop that had been the old race-condition workaround, and finding and fixing the two correctness defects the new recalculation worker introduced, both before they reached customers.",
+    "capabilities": [
+      "Distributed Systems",
+      "Debugging",
+      "Backend Engineering",
+      "System Design"
+    ],
+    "technologies": [
+      "NestJS",
+      "Kafka",
+      "PostgreSQL",
+      "TypeScript"
+    ],
+    "difficulty": "high",
+    "ownership": "contributed",
+    "customerFacing": "Yes",
+    "period": "2026",
+    "readingTime": "7 min",
+    "sections": [
+      {
+        "id": "context",
+        "title": "Why this case study matters",
+        "paras": [
+          "Not every piece of architecture work is one you own. This is my clearest evidence of the other role, the one that decides whether someone else's good decision survives contact with production: being the person the designer reasons against, then taking the unglamorous half of the migration — retiring the mechanism the new design made obsolete, and stress-testing the replacement hard enough to find what it got wrong.",
+          "It is also the case where the two bugs I found were both of a kind I now look for specifically: not crashes, but silently wrong numbers produced by a computation that runs successfully."
+        ],
+        "bullets": [],
+        "tables": []
+      },
+      {
+        "id": "problem",
+        "title": "What problem existed",
+        "paras": [
+          "The platform derives a completion metric for industrial inspection routes — how much of a route has actually been inspected — and shows it on a customer-facing indicators screen. The underlying facts arrive as events: assets and their hierarchy change, inspection answers are submitted, machines are moved or deleted.",
+          "Two independently deployed services each consumed those events and each recomputed and wrote the same metric. Under retries, out-of-order delivery or partial failure they disagreed, and a customer could see two different completion numbers for the same route depending on which screen they opened.",
+          "The team had already tried to contain this without redesigning it. A proxy consumer re-published every asset-hierarchy event to a second Kafka topic, partitioned by the root of the asset path, so that all events touching the same root would land on the same partition and be processed in order. Ordering made the race less likely. It did not make it impossible, and it cost a second Kafka hop — every event now travelled through two topics before it was handled, adding consumer lag for a guarantee that was never actually complete."
+        ],
+        "bullets": [],
+        "tables": []
+      },
+      {
+        "id": "constraints",
+        "title": "Why was it difficult",
+        "paras": [],
+        "bullets": [
+          "The fix had to cross a service boundary and a person boundary. The two computing services had different owners. Any design only worked if both sides agreed to it and one side agreed to stop computing entirely.",
+          "The old workaround was load-bearing until the exact moment it wasn't. The re-partitioning hop existed to prevent the race. Removing it before the new single-owner path was correct would have reintroduced the original bug with none of the mitigation.",
+          "The failure mode is a wrong number, not an error. A recalculation worker that computes the wrong value succeeds. Nothing throws, nothing alerts, no log line looks unusual — the only way to catch it is to reason about what the number should be for a specific data shape and then go read the database.",
+          "Deletion is the adversarial case. Most of the design reasoning assumes data being added. The defects both surfaced on deletion — an asset removed from a route, an asset shared across several routes — which is where the counters and the business rules stop agreeing with each other."
+        ],
+        "tables": []
+      },
+      {
+        "id": "decision",
+        "title": "How I approached it",
+        "paras": [
+          "The design decision — one owning service recomputes the metric from source, every other service only signals that a route is stale, and the signals are deduplicated in a recalculation queue keyed by route and cycle — was authored by another engineer. My part in that phase was as the counterpart she worked the design against: the recalculation worker was going to live in a service I work in, so I walked through how its worker model behaved and where an idempotent recompute would sit in it. The decision was hers; the constraints of the service it landed in were mine to explain.",
+          "What I then owned:",
+          "Both defects were diagnosed, written up with root cause and reproduction steps, and fixed within two days of being found."
+        ],
+        "bullets": [
+          "Validated and migrated one of the two producers. The existing consumer for inspection-point events was assumed to be maintaining the route's asset projection correctly, but had never been checked scenario by scenario. I verified create, update and delete behaviour against the real projection — including moving a single inspection point between assets inside and outside a route — and then converted it from computing the metric to upserting into the recalculation queue.",
+          "Deleted the ordering workaround the new design made unnecessary. Once the queue deduplicated by route and cycle, idempotency no longer depended on events arriving in order, so the entire re-partitioning layer became dead weight. I removed the proxy consumer that re-published to the ordered topic and the ordered consumer reading from it, putting the asset-hierarchy consumer back on the original topic and removing the second Kafka hop's lag.",
+          "Found the alert-leak defect under load testing. The worker recomputed each cycle's alert counters from the `alerts` field on the checklist definition rather than from the answers recorded inside that cycle for that route. Since one checklist can belong to many routes, an alert raised on a single route was written into the cycles of every route sharing that checklist. Deleting an asset present in multiple routes triggered exactly that recompute, which is how it surfaced. The fix scoped the counters to the answers within the active cycle window for that route, matching what the answer-submission path already did.",
+          "Found the empty-cycle defect in staging. The rule deciding whether a cycle counts as \"justified\" compared justified items against total items. When an asset was deleted, its items were soft-deleted, the worker recomputed the cycle to zero items, and the comparison became `0 === 0` — true. Cycles that had simply been emptied were being marked as justified, inflating the justification metrics and hiding routes that had genuinely gone uninspected. The fix was a guard requiring at least one recorded answer before a cycle can be justified; because justifying an answer increments the answer count, a genuinely justified cycle always passes it and an emptied one never does. The rule was shared with the answer-submission flow, so the correction applied to both paths."
+        ],
+        "tables": []
+      },
+      {
+        "id": "tradeoffs",
+        "title": "Trade-offs considered",
+        "paras": [],
+        "bullets": [
+          "Removing the ordering layer entirely, over keeping it as belt-and-braces. Leaving it in place would have preserved a familiar safety net, but a mechanism nobody needs is a mechanism nobody maintains or understands — and this one had a measurable cost in lag on every single event. Deleting it made the queue's deduplication the one explanation for how ordering is handled, instead of two overlapping partial answers.",
+          "Guarding the justification rule at the shared rule, over patching the worker. Special-casing the worker would have fixed the symptom faster and left the same latent bug in the answer-submission path. Correcting the shared rule meant reasoning about both callers, and accepting the wider blast radius of changing a rule used by a live write path.",
+          "Recomputing alert counters from answers, over reading the cheaper denormalised field. The definition's field was already loaded and required no extra query. It was also structurally incapable of being route-specific. Correctness won over the query."
+        ],
+        "tables": []
+      },
+      {
+        "id": "impact",
+        "title": "Impact",
+        "paras": [],
+        "bullets": [
+          "Removed an entire Kafka re-partitioning hop from the asset-hierarchy event path, cutting the consumer lag it added on every event, and eliminating the ordering mechanism as a thing future engineers would have to understand.",
+          "Prevented two classes of silently-wrong customer-facing numbers from reaching production: alerts attributed to routes where they never happened, and emptied cycles reported as justified.",
+          "Migrated the second of the two producers onto the queue, without which the single-computation-path design would have been half-applied and the race still live.",
+          "Both defects were caught before release — one in load testing, one in staging validation — rather than by a customer noticing a wrong number, which had been how this class of problem was previously discovered."
+        ],
+        "tables": []
+      },
+      {
+        "id": "lessons",
+        "title": "What I learned",
+        "paras": [],
+        "bullets": [
+          "A migration isn't finished when the new path works — it's finished when the old one is deleted. The re-partitioning hop would have survived indefinitely as \"harmless\", quietly costing lag and confusing everyone who read the topology afterwards.",
+          "Computations that produce wrong numbers don't announce themselves. No exception, no alert, no anomalous log. Finding them means picking a data shape, predicting what the number should be, and going to look — which is a testing strategy, not a debugging one.",
+          "Deletion is where derived counters break. Both defects lived on the delete path, because deletion is the case where \"count what exists\" and \"decide what it means\" stop agreeing. I now reach for the delete scenario first when reviewing anything that aggregates.",
+          "Being the counterpart is a real contribution, and it's worth being precise about. I didn't own this decision. I owned knowing the service it had to live in, retiring what it replaced, and proving it correct — and conflating that with authorship would make the evidence weaker, not stronger."
+        ],
+        "tables": []
+      },
+      {
+        "id": "evidence",
+        "title": "Evidence",
+        "paras": [],
+        "bullets": [
+          "Validated and migrated the inspection-point consumer onto the recalculation queue, covering create, update and delete against the real projection.",
+          "Removed the re-publishing proxy consumer and the ordered consumer, returning the asset-hierarchy consumer to the original topic.",
+          "Reported and fixed the alert-leak defect in the recalculation worker's counter service, found during load testing.",
+          "Reported and fixed the empty-cycle justification defect, found during staging validation, in a rule shared with the answer-submission flow.",
+          "Both defect reports include root-cause analysis and reproduction steps; both were resolved within two days of being raised."
         ],
         "tables": []
       }
@@ -1580,7 +1705,7 @@ export const stats: Stat[] = [
   },
   {
     "label": "case studies",
-    "value": "7"
+    "value": "8"
   },
   {
     "label": "architecture decisions",
