@@ -52,6 +52,12 @@ export const metadata: Metadata = {
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
   },
+  /** Proves ownership of the Google Search Console property. Removing it
+   *  un-verifies the site, which stops sitemap submissions and indexing
+   *  reports — it is not a leftover. */
+  verification: {
+    google: "B4XatJ8bt_pI8VeHn1hb_bCANpZP_Ew3M1Of7BmQ2mk",
+  },
 };
 
 /** Matches the shell background, so mobile browser chrome doesn't frame the
