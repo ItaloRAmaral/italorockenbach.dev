@@ -20,6 +20,14 @@ interface CompanyPageProps {
   params: Promise<{ id: string }>;
 }
 
+/**
+ * Only the slugs listed by generateStaticParams exist. Anything else is a 404
+ * with no work done, rather than an on-demand render of a page that will call
+ * notFound() anyway. Safe here because the content is compiled into the bundle:
+ * a new entry already requires a rebuild, which the content-sync workflow does.
+ */
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return getCompanies().map((company) => ({ id: company.id }));
 }
