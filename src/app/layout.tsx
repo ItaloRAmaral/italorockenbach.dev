@@ -3,6 +3,7 @@ import { Fragment_Mono, Newsreader, Work_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { MobileNav } from "@/components/layout/MobileNav";
 import { siteConfig } from "@/config";
 import "./globals.css";
 
@@ -82,6 +83,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <MobileNav />
         <div className="shell">
           <Sidebar />
           <main className="main">{children}</main>

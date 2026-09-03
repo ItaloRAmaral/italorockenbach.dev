@@ -1,0 +1,179 @@
+/* Mirrors the sidebar's breakpoint: this exists exactly where the sidebar
+   stops existing. */
+.wrapper {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .wrapper {
+    display: block;
+  }
+}
+
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 20px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-decoration: none;
+  min-width: 0;
+}
+
+.brand:hover {
+  text-decoration: none;
+}
+
+.name {
+  font-weight: 600;
+  font-size: 13.5px;
+  line-height: 1.25;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.role {
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+.barActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+}
+
+.menuButton {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+
+.menuButton:hover {
+  color: var(--text);
+  border-color: var(--text-faint);
+}
+
+.menuButton svg {
+  width: 19px;
+  height: 19px;
+  stroke-linecap: round;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
+}
+
+.backdrop[data-open="true"] {
+  opacity: 1;
+  visibility: visible;
+}
+
+.panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 50;
+  width: min(300px, 84vw);
+  height: 100dvh;
+  overflow-y: auto;
+  padding: 26px 18px calc(26px + env(safe-area-inset-bottom));
+  background: var(--panel);
+  border-left: 1px solid var(--border);
+  transform: translateX(100%);
+  visibility: hidden;
+  transition:
+    transform 0.24s ease,
+    visibility 0.24s ease;
+}
+
+.panel[data-open="true"] {
+  transform: translateX(0);
+  visibility: visible;
+}
+
+/* Same visual language as the sidebar's nav, deliberately — it is the same
+   navigation, not a second one. */
+.navGroup {
+  margin-bottom: 24px;
+}
+
+.navGroupLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 10px;
+  padding: 0 12px;
+}
+
+.navLink {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-dim);
+  text-decoration: none;
+}
+
+.navLink:hover {
+  background: var(--border-soft);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.navLink[data-current="true"] {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.navDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.5;
+  flex: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop,
+  .panel {
+    transition: none;
+  }
+}
