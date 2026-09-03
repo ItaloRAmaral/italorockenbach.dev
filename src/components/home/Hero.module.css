@@ -14,7 +14,14 @@
   font-size: 17px;
   color: var(--text-dim);
   font-weight: 500;
-  margin-bottom: 14px;
+  margin-bottom: 6px;
+}
+
+.availability {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-faint);
+  margin-bottom: 16px;
 }
 
 .contactRow {

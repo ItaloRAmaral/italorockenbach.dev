@@ -1,4 +1,4 @@
-import { contactLinks } from "@/config";
+import { contactLinks, siteConfig } from "@/config";
 import type { Company, Profile } from "@/domain/types";
 import styles from "./Hero.module.css";
 
@@ -16,6 +16,7 @@ export function Hero({ profile, primaryCompany, experience }: HeroProps) {
     <section className={styles.hero}>
       <h1 className={styles.name}>{profile.name}</h1>
       <div className={styles.role}>{primaryCompany.role}</div>
+      <div className={styles.availability}>{siteConfig.availability}</div>
 
       <div className={styles.contactRow}>
         {links.map((link) => (

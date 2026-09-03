@@ -7,11 +7,18 @@ import type { ContactLink } from "@/domain/types";
 export const siteConfig = {
   /** Dark is the default appearance, not just an OS-preference fallback. */
   defaultTheme: "dark" as "dark" | "light",
+  /**
+   * Rendered directly under the name on the home page — the availability
+   * question a recruiter would otherwise have to ask before anything else.
+   */
+  availability: "Open to remote roles, or on-site in Florianópolis, Brazil",
+  /** Used in the schema.org Person as the candidate's location. */
+  location: { city: "Florianópolis", region: "SC", country: "BR" },
   email: "italorockamaral@gmail.com",
-  linkedin: "https://www.linkedin.com/in/italorockenbach",
+  linkedin: "https://www.linkedin.com/in/italo-rockenbach/",
   github: "https://github.com/ItaloRAmaral",
-  /** No production domain yet — override via NEXT_PUBLIC_SITE_URL once one exists. */
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "https://engineering-record.vercel.app",
+  /** The Vercel deployment. Override via NEXT_PUBLIC_SITE_URL if a custom domain arrives. */
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "https://italorockenbachdev.vercel.app",
 } as const;
 
 export function contactLinks(): ContactLink[] {
