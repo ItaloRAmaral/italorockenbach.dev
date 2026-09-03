@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "./ThemeToggle";
+import { SearchTrigger } from "@/components/search/SearchTrigger";
 import { NAV_GROUPS, isCurrentRoute } from "./nav";
 import styles from "./MobileNav.module.css";
 
@@ -57,6 +58,7 @@ export function MobileNav() {
         </Link>
 
         <div className={styles.barActions}>
+          <SearchTrigger variant="icon" />
           <ThemeToggle />
           <button
             ref={buttonRef}

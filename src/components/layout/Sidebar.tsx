@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "./ThemeToggle";
+import { SearchTrigger } from "@/components/search/SearchTrigger";
 import { NAV_GROUPS, isCurrentRoute } from "./nav";
 import styles from "./Sidebar.module.css";
 
@@ -15,6 +16,8 @@ export function Sidebar() {
         <div className={styles.name}>Italo Rockenbach Amaral</div>
         <div className={styles.role}>Engineering Record</div>
       </div>
+
+      <SearchTrigger />
 
       {NAV_GROUPS.map((group) => (
         <nav className={styles.navGroup} key={group.label} aria-label={group.label}>

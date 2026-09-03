@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { MobileNav } from "@/components/layout/MobileNav";
+import { CommandPalette } from "@/components/search/CommandPalette";
 import { siteConfig } from "@/config";
 import "./globals.css";
 
@@ -88,6 +89,7 @@ export default function RootLayout({
           <Sidebar />
           <main className="main">{children}</main>
         </div>
+        <CommandPalette />
         <Analytics />
         <SpeedInsights />
       </body>

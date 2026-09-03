@@ -1,0 +1,63 @@
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 26px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: transparent;
+  color: var(--text-faint);
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.bar:hover {
+  border-color: var(--text-faint);
+  color: var(--text-dim);
+}
+
+.bar svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+}
+
+.label {
+  flex: 1;
+  text-align: left;
+}
+
+.kbd {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-faint);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+
+.icon:hover {
+  color: var(--text);
+  border-color: var(--text-faint);
+}
+
+.icon svg {
+  width: 18px;
+  height: 18px;
+}
