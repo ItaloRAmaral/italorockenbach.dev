@@ -1,5 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Fragment_Mono, Newsreader, Work_Sans } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { siteConfig } from "@/config";
 import "./globals.css";
@@ -52,16 +54,34 @@ export const metadata: Metadata = {
   },
 };
 
+/** Matches the shell background, so mobile browser chrome doesn't frame the
+ *  dark page in a light bar. */
+export const viewport: Viewport = {
+  themeColor: "#0b0d10",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
+      <head>
+        {/* Applies a stored light-mode preference before first paint. Inline and
+            synchronous on purpose: anything deferred repaints the page, and the
+            visitor sees a dark flash before their own choice takes effect. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(localStorage.getItem("theme")==="light"){document.documentElement.setAttribute("data-theme","light")}}catch(e){}`,
+          }}
+        />
+      </head>
       <body>
         <div className="shell">
           <Sidebar />
           <main className="main">{children}</main>
         </div>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
