@@ -17,7 +17,12 @@ import styles from "./MobileNav.module.css";
  * effect watching the pathname: setting state in an effect is the pattern that
  * caused the theme flash (see useTheme), and here it isn't needed at all.
  */
-export function MobileNav() {
+interface MobileNavProps {
+  /** From the knowledge base, not written here — the name has one source. */
+  name: string;
+}
+
+export function MobileNav({ name }: MobileNavProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -53,7 +58,7 @@ export function MobileNav() {
     <div className={styles.wrapper}>
       <header className={styles.bar}>
         <Link href="/" className={styles.brand} onClick={() => setOpen(false)}>
-          <span className={styles.name}>Italo Rockenbach Amaral</span>
+          <span className={styles.name}>{name}</span>
           <span className={styles.role}>Engineering Record</span>
         </Link>
 

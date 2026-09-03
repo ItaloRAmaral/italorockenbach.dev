@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { getCaseStudies, getCaseStudy } from "@/repositories/content-repository";
+import { getCaseStudies, getCaseStudy, getProfile } from "@/repositories/content-repository";
 
 /**
  * A share card per case study.
@@ -12,7 +12,7 @@ import { getCaseStudies, getCaseStudy } from "@/repositories/content-repository"
  */
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Case study — Italo Rockenbach Amaral";
+export const alt = `Case study — ${getProfile().name}`;
 
 /** Same rule as the page: an unknown slug is a 404, not a rendered card. */
 export const dynamicParams = false;
@@ -91,7 +91,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
               color: "#a8a6a0",
             }}
           >
-            <span>Italo Rockenbach Amaral</span>
+            <span>{getProfile().name}</span>
             {study && <span>{study.period}</span>}
           </div>
         </div>

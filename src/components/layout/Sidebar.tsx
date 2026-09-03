@@ -8,18 +8,20 @@ import { NAV_GROUPS, isCurrentRoute } from "./nav";
 import styles from "./Sidebar.module.css";
 
 interface SidebarProps {
+  /** From the knowledge base, not written here — the name has one source. */
+  name: string;
   /** Build month, e.g. "2026.09" — computed by the server layout so the
    *  footer cannot drift out of date the way a hardcoded string did. */
   revision: string;
 }
 
-export function Sidebar({ revision }: SidebarProps) {
+export function Sidebar({ name, revision }: SidebarProps) {
   const pathname = usePathname();
 
   return (
     <aside className={styles.sidebar}>
       <div className={styles.brand}>
-        <div className={styles.name}>Italo Rockenbach Amaral</div>
+        <div className={styles.name}>{name}</div>
         <div className={styles.role}>Engineering Record</div>
       </div>
 

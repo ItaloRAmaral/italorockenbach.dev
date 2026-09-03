@@ -5,6 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { CommandPalette } from "@/components/search/CommandPalette";
+import { getCompanies, getProfile } from "@/repositories/content-repository";
 import { siteConfig } from "@/config";
 import "./globals.css";
 
@@ -30,7 +31,20 @@ const mono = Fragment_Mono({
   display: "swap",
 });
 
-const SITE_NAME = "Engineering Record — Italo Rockenbach Amaral";
+const profile = getProfile();
+const currentRole = getCompanies()[0]?.role ?? "Software Engineer";
+
+/**
+ * The name leads, because the name is what people search for. "Engineering
+ * Record" is what this site is called, not what anyone types into Google —
+ * as the browser-tab title it pushed the only searchable term to the end.
+ *
+ * Both halves come from the knowledge base so the tab, the search result and
+ * the structured data can never disagree about the name or the job title.
+ */
+const SITE_NAME = `${profile.name} — ${currentRole}`;
+/** The site's own name, for og:site_name — a label, not a search term. */
+const SITE_LABEL = "Engineering Record";
 const SITE_DESCRIPTION =
   "Career evidence and technical notes for a backend and architecture reference.";
 
@@ -38,13 +52,13 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.siteUrl),
   title: {
     default: SITE_NAME,
-    template: "%s — Italo Rockenbach Amaral",
+    template: `%s — ${profile.name}`,
   },
   description: SITE_DESCRIPTION,
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
-    siteName: SITE_NAME,
+    siteName: SITE_LABEL,
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
     url: "/",
@@ -97,9 +111,9 @@ export default function RootLayout({
         <a href="#main" className="skipLink">
           Skip to content
         </a>
-        <MobileNav />
+        <MobileNav name={profile.name} />
         <div className="shell">
-          <Sidebar revision={buildRevision()} />
+          <Sidebar name={profile.name} revision={buildRevision()} />
           <main id="main" className="main" tabIndex={-1}>
             {children}
           </main>

@@ -14,7 +14,7 @@ interface PersonJsonLdInput {
 }
 
 /** schema.org Person, rendered as JSON-LD on the home page — lets search
- *  engines resolve "Italo Rockenbach Amaral" as an entity with a canonical
+ *  engines resolve the person as an entity with a canonical
  *  site, profile links and subjects of expertise, instead of just an indexed
  *  page of text. */
 export function personJsonLd({
