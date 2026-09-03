@@ -7,7 +7,13 @@ import { SearchTrigger } from "@/components/search/SearchTrigger";
 import { NAV_GROUPS, isCurrentRoute } from "./nav";
 import styles from "./Sidebar.module.css";
 
-export function Sidebar() {
+interface SidebarProps {
+  /** Build month, e.g. "2026.09" — computed by the server layout so the
+   *  footer cannot drift out of date the way a hardcoded string did. */
+  revision: string;
+}
+
+export function Sidebar({ revision }: SidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -37,7 +43,7 @@ export function Sidebar() {
       ))}
 
       <div className={styles.foot}>
-        <span className={styles.rev}>rev. 2026.08</span>
+        <span className={styles.rev}>rev. {revision}</span>
         <ThemeToggle />
       </div>
     </aside>

@@ -68,6 +68,13 @@ export const viewport: Viewport = {
   themeColor: "#0b0d10",
 };
 
+/** Evaluated when the page is built, and every page here is prerendered — so
+ *  this is the date the published content was generated. */
+function buildRevision(): string {
+  const now = new Date();
+  return `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}`;
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -84,10 +91,18 @@ export default function RootLayout({
         />
       </head>
       <body>
+        {/* First focusable element on the page. Without it, reaching the
+            content by keyboard means tabbing past twelve navigation links on
+            every single page. */}
+        <a href="#main" className="skipLink">
+          Skip to content
+        </a>
         <MobileNav />
         <div className="shell">
-          <Sidebar />
-          <main className="main">{children}</main>
+          <Sidebar revision={buildRevision()} />
+          <main id="main" className="main" tabIndex={-1}>
+            {children}
+          </main>
         </div>
         <CommandPalette />
         <Analytics />

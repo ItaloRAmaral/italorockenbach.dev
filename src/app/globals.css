@@ -106,6 +106,33 @@ h3 {
   font-variant-numeric: tabular-nums;
 }
 
+/* Visible only while focused — the keyboard shortcut past the navigation. */
+.skipLink {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 100;
+  padding: 10px 16px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--accent);
+  font-size: 13.5px;
+  text-decoration: none;
+  transform: translateY(-160%);
+  transition: transform 0.15s ease;
+}
+
+.skipLink:focus-visible {
+  transform: translateY(0);
+}
+
+/* The skip link's target takes focus programmatically; it should not draw a
+   focus ring as though it were an interactive control. */
+.main:focus {
+  outline: none;
+}
+
 /* ---------------- app shell ---------------- */
 .shell {
   display: flex;
