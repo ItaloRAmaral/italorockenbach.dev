@@ -4,7 +4,6 @@ import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { ReadingProgress } from "@/components/shared/ReadingProgress";
 import { DocumentSection } from "@/components/shared/DocumentSection";
 import { CaseFacts } from "@/components/cases/CaseFacts";
-import { DocumentToc } from "@/components/shared/DocumentToc";
 import { getCaseStudies, getCaseStudy, getCompany } from "@/repositories/content-repository";
 import { pageMetadata } from "@/lib/seo";
 import styles from "./page.module.css";
@@ -59,12 +58,7 @@ export default async function CasePage({ params }: CasePageProps) {
         </article>
 
         <aside className={styles.aside}>
-          <div className={styles.stickyFacts}>
-            <CaseFacts study={study} company={company} />
-            <div className={styles.tocWrap}>
-              <DocumentToc sections={study.sections} />
-            </div>
-          </div>
+          <CaseFacts study={study} company={company} />
         </aside>
       </div>
     </>

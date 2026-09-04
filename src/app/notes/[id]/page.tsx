@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { ReadingProgress } from "@/components/shared/ReadingProgress";
 import { DocumentSection } from "@/components/shared/DocumentSection";
-import { DocumentToc } from "@/components/shared/DocumentToc";
 import { NoteFacts } from "@/components/notes/NoteFacts";
 import { getCaseStudy, getNote, getNotes } from "@/repositories/content-repository";
 import { pageMetadata } from "@/lib/seo";
@@ -61,12 +60,7 @@ export default async function NotePage({ params }: NotePageProps) {
         </article>
 
         <aside className={styles.aside}>
-          <div className={styles.stickyFacts}>
-            <NoteFacts note={note} relatedCases={relatedCases} />
-            <div className={styles.tocWrap}>
-              <DocumentToc sections={note.sections} />
-            </div>
-          </div>
+          <NoteFacts note={note} relatedCases={relatedCases} />
         </aside>
       </div>
     </>

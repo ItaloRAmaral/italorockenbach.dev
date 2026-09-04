@@ -27,17 +27,6 @@
   top: 24px;
 }
 
-.stickyFacts {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.tocWrap {
-  border-top: 1px solid var(--border);
-  padding-top: 16px;
-}
-
 @media (max-width: 860px) {
   .layout {
     grid-template-columns: 1fr;
