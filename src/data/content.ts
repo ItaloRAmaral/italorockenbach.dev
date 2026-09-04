@@ -259,19 +259,20 @@ export const companies: Company[] = [
       "closing-a-cve-gap-through-container-hardening",
       "bootstrapping-a-teams-infrastructure-from-zero",
       "enforcing-business-rules-in-an-outbox-driven-answer-pipeline",
-      "decommissioning-a-race-condition-workaround"
+      "decommissioning-a-race-condition-workaround",
+      "repairing-a-drifted-status-field"
     ],
     "technologies": [
-      "TypeScript",
       "NestJS",
+      "Kafka",
+      "PostgreSQL",
+      "Prisma",
+      "TypeScript",
       "JavaScript",
       "BigQuery",
       "Redis",
       "Terraform",
-      "Kafka",
       "Kafka Connect",
-      "PostgreSQL",
-      "Prisma",
       "Flink",
       "Kubernetes",
       "Docker",
@@ -280,24 +281,24 @@ export const companies: Company[] = [
       "Node.js"
     ],
     "capabilities": [
+      "Reliability",
+      "Backend Engineering",
+      "Ownership",
+      "Technical Communication",
       "System Design",
       "Technical Decision Making",
-      "Technical Communication",
-      "Ownership",
-      "Backend Engineering",
       "Security",
       "Distributed Systems",
-      "Reliability",
       "Incident Response",
       "Debugging",
       "Infrastructure Engineering"
     ],
     "lessons": [
+      "A denormalized field needs a defined owner and a way to prove it agrees with its source. This one had several writers and no reader that ever checked it. The repair command turned out to be that missing check, and it's more valuable as a verifier — run it in dry-run and it tells you whether anything has drifted — than as a fixer.",
       "Splitting a high-risk decision into \"what\" and \"where to start\" reduces analysis paralysis. Answering both at once made the decision feel bigger and scarier than either question was on its own.",
       "Decompose a conflated decision into independent axes before comparing alternatives. Bundling \"which service\" and \"which database\" into single either/or options obscures which axis actually drives each trade-off.",
       "A dual write across two systems is not a rare failure mode — it is a certainty given enough time and traffic. Any place where \"persist\" and \"publish\" happen as two separate steps against two separate stores needs a pattern (like a transactional outbox) that makes them atomic, not just careful code.",
-      "Configuration tuning resolves a symptom, not a structural cause — when the real problem is under-provisioning, it reappears under new load no matter how well the existing setup is tuned.",
-      "A migration isn't finished when the new path works — it's finished when the old one is deleted. The re-partitioning hop would have survived indefinitely as \"harmless\", quietly costing lag and confusing everyone who read the topology afterwards."
+      "Configuration tuning resolves a symptom, not a structural cause — when the real problem is under-provisioning, it reappears under new load no matter how well the existing setup is tuned."
     ],
     "domainLabels": [
       "Industrial inspection & condition monitoring"
@@ -306,6 +307,136 @@ export const companies: Company[] = [
 ];
 
 export const cases: CaseStudy[] = [
+  {
+    "id": "repairing-a-drifted-status-field",
+    "featured": false,
+    "title": "Repairing a status field that had drifted from its own source of truth",
+    "company": "dynamox",
+    "category": "debugging",
+    "summary": "An enterprise customer's asset hierarchy was showing alert states that contradicted the inspections behind them, to the point that their leadership was questioning the alert volume. I found the write path that let the state drift, fixed it, and built a dry-runnable repair command for the rows already wrong — then, reviewing my own pull request, found that my forward fix had introduced a fresh drift path of its own and corrected it before merge.",
+    "capabilities": [
+      "Reliability",
+      "Backend Engineering",
+      "Ownership",
+      "Technical Communication"
+    ],
+    "technologies": [
+      "NestJS",
+      "Kafka",
+      "PostgreSQL",
+      "Prisma",
+      "TypeScript"
+    ],
+    "difficulty": "high",
+    "ownership": "autonomous",
+    "customerFacing": "Yes",
+    "period": "2026",
+    "readingTime": "10 min",
+    "sections": [
+      {
+        "id": "context",
+        "title": "Why this case study matters",
+        "paras": [
+          "This is the case I'd point at to explain what I actually do with a bug report. The reported symptom was a wrong icon in a tree. Underneath it were three separate problems — a write path that was incomplete, a population of already-corrupted rows that no code fix would ever reach, and a domain rule about justifications that made the \"obvious\" repair wrong — and each needed a different kind of answer.",
+          "It's also the clearest evidence I have of a habit rather than an outcome. I review my own pull request before I ask anyone else to look at it, and I run a second pass with an AI review agent to catch what I've stopped seeing. In this pull request, that pass is where the two most consequential commits came from. One of them was a new instance of the very class of bug the pull request existed to eliminate — written by me, hours earlier."
+        ],
+        "bullets": [],
+        "tables": []
+      },
+      {
+        "id": "problem",
+        "title": "What problem existed",
+        "paras": [
+          "The platform shows a hierarchy of a customer's industrial assets, and each node carries the alert state of the inspections beneath it. An enterprise customer reported that the hierarchy was flagging assets as abnormal when the most recent inspection of the underlying checklist had recorded a normal condition. Their own leadership was asking why so many alerts were showing, and the answer was that a lot of them weren't real.",
+          "The state shown in the tree comes from a denormalized alert field on the checklist entity, kept up to date by the answer-submission flow and published downstream as an event. There is more than one way to answer a checklist, and one of them — the path for \"inspected and no anomalies found\" — created the answer, updated the inspection cycle, and published its event, but never touched the alert field on the entity itself.",
+          "The consequence is a field that only moves in one direction. A checklist that had ever raised an alert kept displaying it forever, no matter how many normal inspections followed. The alert state and the answers it was supposed to summarize were free to disagree indefinitely, and nothing in the system noticed."
+        ],
+        "bullets": [],
+        "tables": []
+      },
+      {
+        "id": "constraints",
+        "title": "Why was it difficult",
+        "paras": [],
+        "bullets": [
+          "The wrong number is the output of a successful operation. Every inspection in this path succeeded. The answer was written, the cycle updated, the event published, the logs clean. There is no failure to trace back from — the only way in is to pick a checklist, work out what its state should be from its answers, and go compare.",
+          "A code fix reaches none of the existing damage. The moment I understood the write path, I had a one-line fix and a population of rows in production that the fix would never touch. Those rows are only repaired by something that goes and looks at them, and a repair that runs against real customer data has a much higher bar than a bug fix.",
+          "The naive definition of \"correct\" is wrong. The obvious repair is \"set the field from the latest answer\". But an inspector can justify an alert — explain or accept the condition — and a justification is recorded with its alert counters zeroed by construction. Justifying is not the same as the condition returning to normal. Rebuilding the field from the latest answer would have quietly zeroed out every justified alert on the platform: the same bug, applied deliberately and at scale.",
+          "The repair is only half in the database. The tree doesn't read the database; it reads what the service publishes. Correcting a row without republishing leaves the database right and the customer's screen still wrong — a state that looks entirely healthy from the database side."
+        ],
+        "tables": []
+      },
+      {
+        "id": "decision",
+        "title": "How I approached it",
+        "paras": [
+          "Reproduce the shape, not the incident. I started by writing the failing case as a test: a checklist holding an abnormal state, answered through the no-anomalies path, asserting the state comes back to normal afterwards. That test failed for exactly the reason the customer was seeing, which is what turned a report about an icon into a statement about a write path. It stayed in the suite as a regression test.",
+          "Fix forward, then repair backward — and treat them as different problems. The forward fix was small: the no-anomalies path now resets the entity's alert state along with everything else it writes. The backward repair was the real work, because it runs against production data, and I gave it the properties I'd want from anyone else's repair tool:",
+          "Encode the justification rule explicitly. The source of truth is the most recent non-justified answer, and I wrote down why in the command's documentation rather than leaving it as a subtle line of code: a justification explains an alert, it does not retract it, so it can never be what the entity's state is rebuilt from. This is the rule that separates a repair from a second outage.",
+          "Then review my own pull request. Two findings, both after the feature was working:"
+        ],
+        "bullets": [
+          "a dry run that does no writes at all and prints exactly what it would change, including the before and after state for each checklist, so the change can be reviewed before it happens rather than explained afterwards;",
+          "an audit record per fix, in the same transaction as the update, holding the old and new values, the operator who ran it, and the identity and timestamp of the specific answer used as the source of truth — so months later it's answerable why a given row holds what it holds;",
+          "a republish of the corrected entity, built through the same builder the live answer flow uses, so the repaired state reaches the tree the same way a real inspection would rather than through a second, divergent path;",
+          "idempotency by construction — a checklist that is already correct is reported as such and nothing is written, so the command is safe to run repeatedly and safe to run on a list that is mostly fine.",
+          "A failed republish was taking the whole run down with it. The publish call was an unguarded `await`. If the message broker were unreachable for one checklist, the exception would unwind the run — abandoning the remaining checklists and, worse, skipping the summary entirely, so the operator would be left without a record of what had already been changed. I gave partial success its own name: the database fix stands (it committed before the publish was attempted, and silently discarding a correct write because the broker blinked is not an improvement), the run continues, and the summary reports those checklists under their own count with the exact replay command for each. That reporting is the whole point — a checklist in this state is correct in the database and stale on the customer's screen, so running the command again finds nothing wrong and moves on. If the summary doesn't say it, nothing will.",
+          "My own forward fix had introduced a new drift path. The alert reset I'd added the day before was writing outside the transaction its caller was running in. If any later step in that transaction failed, the answer and the cycle update would roll back and the alert change would stay — leaving the entity's state describing an inspection that no longer existed. That is the same class of bug I was there to remove, freshly introduced by the fix for it. I threaded the transaction handle through the write and added a regression test that forces a later step in the transaction to fail and asserts the alert state is unchanged."
+        ],
+        "tables": []
+      },
+      {
+        "id": "tradeoffs",
+        "title": "Trade-offs considered",
+        "paras": [],
+        "bullets": [
+          "Shipping a repair tool alongside the code fix, over shipping only the code fix. The code fix alone closes the ticket and leaves an unknown number of customer-visible rows wrong, decaying quietly until someone else reports them as a new bug. The cost of the tool was most of the work in this ticket — and it's the half that actually changed what the customer saw.",
+          "A documented, audited, dry-runnable command, over a one-off script or manual SQL. A direct update would have been an afternoon instead of two days. It would also have left no audit trail, no republish, no way to preview the blast radius, and nothing reusable the next time the field drifts. The repair itself is data the business may need to explain later, which makes the audit record part of the fix rather than ceremony around it.",
+          "The latest non-justified answer as the source of truth, over the latest answer. The simpler rule is one comparison shorter and would have silently erased justified alerts across the platform. Correctness here is a domain rule, not a data-shape question, and it had to be written down where the next person reads it.",
+          "Keeping the database fix when the republish fails, over unwinding it. A failed publish is recoverable by replaying it; a discarded correct write is not recoverable by anything except running the whole repair again. The trade-off accepted is a genuinely inconsistent intermediate state — right in the database, stale on screen — which is why it had to be surfaced loudly in the summary with its remedy attached, rather than merely handled."
+        ],
+        "tables": []
+      },
+      {
+        "id": "impact",
+        "title": "Impact",
+        "paras": [],
+        "bullets": [
+          "Closed the write path that let a customer-facing alert state drift from the inspections it summarizes — the reason a customer's asset hierarchy was reporting alerts their own inspections had already cleared.",
+          "Delivered a repair path for the rows already wrong in production, with a preview mode, a per-row audit trail, and a republish, so correcting live customer data was a reviewable operation instead of a manual one.",
+          "Prevented a second, self-inflicted drift path from reaching production: the forward fix as originally written could have left the alert state describing a rolled-back inspection.",
+          "Left two regression tests behind that fail on the original defect and on the transaction defect respectively — the behaviours are now enforced rather than remembered."
+        ],
+        "tables": []
+      },
+      {
+        "id": "lessons",
+        "title": "What I learned",
+        "paras": [],
+        "bullets": [
+          "A denormalized field needs a defined owner and a way to prove it agrees with its source. This one had several writers and no reader that ever checked it. The repair command turned out to be that missing check, and it's more valuable as a verifier — run it in dry-run and it tells you whether anything has drifted — than as a fixer.",
+          "\"Fixed the bug\" and \"fixed the data\" are two deliverables. A code fix stops the bleeding at a point in time; it says nothing about everything written before it. I now ask, for any bug in derived or denormalized state, how many rows are already wrong and what reaches them.",
+          "Reviewing my own pull request finds things review by others doesn't. Both defects here were invisible from the diff alone — one was an exception path nobody exercises, the other a missing argument that reads as correct unless you're holding the caller's transaction in your head. I write the pull request, then read it as though someone else wrote it, and run an AI review pass to catch what I've stopped seeing. The two commits that came out of that pass are the ones I'd defend hardest in this whole change.",
+          "Introducing the bug you're fixing is the normal case, not an embarrassing one. My forward fix created a new way for the same field to go stale. What matters is that the habit caught it before merge — which is an argument for the habit, not for being cleverer.",
+          "A partial success that no one reports is a silent failure. The database-fixed, never-published state is undetectable from the database and looks like health. Any operation that can half-succeed needs that half to have a name, a count in the summary, and its remedy printed next to it."
+        ],
+        "tables": []
+      },
+      {
+        "id": "evidence",
+        "title": "Evidence",
+        "paras": [],
+        "bullets": [
+          "Diagnosed the write path that omitted the entity's alert reset, and fixed it with an integration regression test reproducing the production data shape.",
+          "Built and documented a maintenance command to repair drifted rows: dry-run mode, audit record per fix inside the update's transaction, republish through the live flow's own event builder, and a summary reporting fixed, already-correct, not-found and fixed-but-unpublished separately.",
+          "Encoded the justification rule — the most recent non-justified answer is the source of truth — in both the implementation and its written documentation.",
+          "Found and fixed, in review of my own pull request, an unguarded publish that would abort the run and suppress its summary, and a write executing outside its caller's transaction; both changes shipped with regression tests.",
+          "Root cause, forward fix, repair tooling and both self-review corrections were delivered across three days, from report to merged pull request."
+        ],
+        "tables": []
+      }
+    ]
+  },
   {
     "id": "rewriting-a-legacy-monolith-decision-and-sequencing",
     "featured": true,
@@ -1705,7 +1836,7 @@ export const stats: Stat[] = [
   },
   {
     "label": "case studies",
-    "value": "8"
+    "value": "9"
   },
   {
     "label": "architecture decisions",
