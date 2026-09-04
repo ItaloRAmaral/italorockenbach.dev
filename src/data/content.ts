@@ -779,7 +779,7 @@ export const cases: CaseStudy[] = [
   },
   {
     "id": "decommissioning-a-race-condition-workaround",
-    "featured": false,
+    "featured": true,
     "title": "Decommissioning a race-condition workaround and hardening its replacement",
     "company": "dynamox",
     "category": "distributed-systems",
@@ -902,114 +902,6 @@ export const cases: CaseStudy[] = [
     ]
   },
   {
-    "id": "root-causing-a-production-outage-instead-of-patching-it",
-    "featured": true,
-    "title": "Root-causing a production outage instead of patching it",
-    "company": "dynamox",
-    "category": "incident",
-    "summary": "Diagnosed a full production outage down to an unlocked schema migration and shipped a structural fix within 24 hours, with preventive safeguards adopted afterward as team standard.",
-    "capabilities": [
-      "Incident Response",
-      "Debugging",
-      "Reliability",
-      "Technical Communication"
-    ],
-    "technologies": [
-      "PostgreSQL",
-      "Kubernetes",
-      "NestJS"
-    ],
-    "difficulty": "medium",
-    "ownership": "autonomous",
-    "customerFacing": "Yes",
-    "period": "2026",
-    "readingTime": "3 min",
-    "sections": [
-      {
-        "id": "context",
-        "title": "Why this case study matters",
-        "paras": [
-          "This is my clearest evidence of incident-response discipline: staying with a root-cause investigation under real time pressure instead of reaching for the fastest visible fix. It also shows that I treat postmortems as a lasting deliverable — the fix mattered, but the preventive standard it produced mattered more for the team's long-term reliability."
-        ],
-        "bullets": [],
-        "tables": []
-      },
-      {
-        "id": "problem",
-        "title": "What problem existed",
-        "paras": [
-          "The domain's backend runs across many replicas and applies database schema migrations automatically on startup during deploys. During a routine deploy, every screen in the domain became unresponsive for roughly 18 minutes during peak hours. There was no automated alert; the incident was detected reactively, through a customer report."
-        ],
-        "bullets": [],
-        "tables": []
-      },
-      {
-        "id": "constraints",
-        "title": "Why was it difficult",
-        "paras": [],
-        "bullets": [
-          "Real time pressure, with the system fully down for every user of the affected module.",
-          "A non-obvious cause. The visible symptom — frozen screens — did not point directly at \"a database lock held during a routine migration.\"",
-          "Concurrent replicas obscured reproduction. Because many replicas ran the same migration simultaneously on deploy, isolating a single reproducible trigger was harder than it would have been with a single migration runner."
-        ],
-        "tables": []
-      },
-      {
-        "id": "decision",
-        "title": "How I approached it",
-        "paras": [
-          "I traced the outage from symptom to mechanism instead of stopping at the first plausible explanation. The investigation found that a single migration executed two separate schema-altering statements against two heavily-read tables inside one transaction, with no lock timeout configured, triggered independently by each of roughly twenty replicas at deploy time. The resulting exclusive lock queued all traffic touching those tables across the whole backend.",
-          "I chose to split the migration into two — one table per migration — and ship that as the actual fix, rather than simply restarting pods or rolling back without understanding why the freeze had happened, even though that meant taking longer to close the incident out."
-        ],
-        "bullets": [],
-        "tables": []
-      },
-      {
-        "id": "tradeoffs",
-        "title": "Trade-offs considered",
-        "paras": [],
-        "bullets": [
-          "Investigating to root cause over mitigating fast and moving on — accepted a longer time-to-close on the incident report, in exchange for a fix and a set of preventive safeguards that addressed the actual failure mode, not just its latest occurrence.",
-          "Recommending migrations run outside the pod startup lifecycle, over keeping the simpler current setup — accepted trading deploy-process simplicity for safety, since the current setup was what allowed dozens of replicas to race the same migration."
-        ],
-        "tables": []
-      },
-      {
-        "id": "impact",
-        "title": "Impact",
-        "paras": [],
-        "bullets": [
-          "Shipped the structural fix (the split migration) within 24 hours of the incident, with no recurrence of the same failure pattern afterward.",
-          "Published a formal postmortem (root cause, impact, preventive actions) that became the reference for the migration standards the team adopted afterward — a default lock timeout on schema-altering statements, and one table per migration.",
-          "Recommended a database lock-wait alert, directly addressing the observability gap that had made this incident detectable only through a customer report."
-        ],
-        "tables": []
-      },
-      {
-        "id": "lessons",
-        "title": "What I learned",
-        "paras": [],
-        "bullets": [
-          "An \"everything is frozen\" incident is often a mechanical database problem, not an application bug — worth checking infrastructure-level causes (locks, connections) before assuming application logic.",
-          "Automatic migrations triggered independently by many replicas are a recurring risk pattern — a deploy entrypoint is the wrong place to run schema-altering DDL.",
-          "Writing the full postmortem, even under pressure to \"move on, it's already fixed,\" is what turns an isolated incident into a lasting process improvement."
-        ],
-        "tables": []
-      },
-      {
-        "id": "evidence",
-        "title": "Evidence",
-        "paras": [],
-        "bullets": [
-          "Formal postmortem document: root cause, impact, and preventive actions.",
-          "Structural fix shipped and verified with no recurrence of the same pattern.",
-          "Related systemic pattern identified across multiple postmortems in the same domain: structural changes made without a documented data contract are the most recurring cause of severe incidents observed."
-        ],
-        "tables": []
-      }
-    ]
-  },
-  {
     "id": "bootstrapping-a-teams-infrastructure-from-zero",
     "featured": false,
     "title": "Bootstrapping a team's infrastructure from zero",
@@ -1111,6 +1003,114 @@ export const cases: CaseStudy[] = [
         "bullets": [
           "Three-plus years of continuous infrastructure ownership and operation for the team, as sole maintainer.",
           "Infrastructure underpinning every other case study in this domain."
+        ],
+        "tables": []
+      }
+    ]
+  },
+  {
+    "id": "root-causing-a-production-outage-instead-of-patching-it",
+    "featured": false,
+    "title": "Root-causing a production outage instead of patching it",
+    "company": "dynamox",
+    "category": "incident",
+    "summary": "Diagnosed a full production outage down to an unlocked schema migration and shipped a structural fix within 24 hours, with preventive safeguards adopted afterward as team standard.",
+    "capabilities": [
+      "Incident Response",
+      "Debugging",
+      "Reliability",
+      "Technical Communication"
+    ],
+    "technologies": [
+      "PostgreSQL",
+      "Kubernetes",
+      "NestJS"
+    ],
+    "difficulty": "medium",
+    "ownership": "autonomous",
+    "customerFacing": "Yes",
+    "period": "2026",
+    "readingTime": "3 min",
+    "sections": [
+      {
+        "id": "context",
+        "title": "Why this case study matters",
+        "paras": [
+          "This is my clearest evidence of incident-response discipline: staying with a root-cause investigation under real time pressure instead of reaching for the fastest visible fix. It also shows that I treat postmortems as a lasting deliverable — the fix mattered, but the preventive standard it produced mattered more for the team's long-term reliability."
+        ],
+        "bullets": [],
+        "tables": []
+      },
+      {
+        "id": "problem",
+        "title": "What problem existed",
+        "paras": [
+          "The domain's backend runs across many replicas and applies database schema migrations automatically on startup during deploys. During a routine deploy, every screen in the domain became unresponsive for roughly 18 minutes during peak hours. There was no automated alert; the incident was detected reactively, through a customer report."
+        ],
+        "bullets": [],
+        "tables": []
+      },
+      {
+        "id": "constraints",
+        "title": "Why was it difficult",
+        "paras": [],
+        "bullets": [
+          "Real time pressure, with the system fully down for every user of the affected module.",
+          "A non-obvious cause. The visible symptom — frozen screens — did not point directly at \"a database lock held during a routine migration.\"",
+          "Concurrent replicas obscured reproduction. Because many replicas ran the same migration simultaneously on deploy, isolating a single reproducible trigger was harder than it would have been with a single migration runner."
+        ],
+        "tables": []
+      },
+      {
+        "id": "decision",
+        "title": "How I approached it",
+        "paras": [
+          "I traced the outage from symptom to mechanism instead of stopping at the first plausible explanation. The investigation found that a single migration executed two separate schema-altering statements against two heavily-read tables inside one transaction, with no lock timeout configured, triggered independently by each of roughly twenty replicas at deploy time. The resulting exclusive lock queued all traffic touching those tables across the whole backend.",
+          "I chose to split the migration into two — one table per migration — and ship that as the actual fix, rather than simply restarting pods or rolling back without understanding why the freeze had happened, even though that meant taking longer to close the incident out."
+        ],
+        "bullets": [],
+        "tables": []
+      },
+      {
+        "id": "tradeoffs",
+        "title": "Trade-offs considered",
+        "paras": [],
+        "bullets": [
+          "Investigating to root cause over mitigating fast and moving on — accepted a longer time-to-close on the incident report, in exchange for a fix and a set of preventive safeguards that addressed the actual failure mode, not just its latest occurrence.",
+          "Recommending migrations run outside the pod startup lifecycle, over keeping the simpler current setup — accepted trading deploy-process simplicity for safety, since the current setup was what allowed dozens of replicas to race the same migration."
+        ],
+        "tables": []
+      },
+      {
+        "id": "impact",
+        "title": "Impact",
+        "paras": [],
+        "bullets": [
+          "Shipped the structural fix (the split migration) within 24 hours of the incident, with no recurrence of the same failure pattern afterward.",
+          "Published a formal postmortem (root cause, impact, preventive actions) that became the reference for the migration standards the team adopted afterward — a default lock timeout on schema-altering statements, and one table per migration.",
+          "Recommended a database lock-wait alert, directly addressing the observability gap that had made this incident detectable only through a customer report."
+        ],
+        "tables": []
+      },
+      {
+        "id": "lessons",
+        "title": "What I learned",
+        "paras": [],
+        "bullets": [
+          "An \"everything is frozen\" incident is often a mechanical database problem, not an application bug — worth checking infrastructure-level causes (locks, connections) before assuming application logic.",
+          "Automatic migrations triggered independently by many replicas are a recurring risk pattern — a deploy entrypoint is the wrong place to run schema-altering DDL.",
+          "Writing the full postmortem, even under pressure to \"move on, it's already fixed,\" is what turns an isolated incident into a lasting process improvement."
+        ],
+        "tables": []
+      },
+      {
+        "id": "evidence",
+        "title": "Evidence",
+        "paras": [],
+        "bullets": [
+          "Formal postmortem document: root cause, impact, and preventive actions.",
+          "Structural fix shipped and verified with no recurrence of the same pattern.",
+          "Related systemic pattern identified across multiple postmortems in the same domain: structural changes made without a documented data contract are the most recurring cause of severe incidents observed."
         ],
         "tables": []
       }
