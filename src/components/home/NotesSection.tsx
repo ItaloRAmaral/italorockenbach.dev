@@ -10,7 +10,7 @@ interface NotesSectionProps {
 export function NotesSection({ notes }: NotesSectionProps) {
   return (
     <section className={styles.section}>
-      <SectionHead title="Field notes" meta={`${notes.length} total →`} />
+      <SectionHead title="Field notes" meta={`${notes.length} total →`} metaHref="/notes" />
       <p className={styles.intro}>
         General technical knowledge, independent of any employer — patterns and
         lessons worth knowing on their own merits.

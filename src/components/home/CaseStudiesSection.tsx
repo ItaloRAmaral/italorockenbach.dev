@@ -11,7 +11,7 @@ interface CaseStudiesSectionProps {
 export function CaseStudiesSection({ featured, total }: CaseStudiesSectionProps) {
   return (
     <section className={styles.section}>
-      <SectionHead title="Featured case studies" meta={`${total} total →`} />
+      <SectionHead title="Featured case studies" meta={`${total} total →`} metaHref="/cases" />
       <div className={styles.list}>
         {featured.map((study) => (
           <CaseCard study={study} key={study.id} />
