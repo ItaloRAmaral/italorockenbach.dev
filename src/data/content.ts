@@ -127,11 +127,11 @@ export interface LearningEntry {
 
 export const profile: Profile = {
   "name": "Italo Rockenbach Amaral",
-  "headline": "Software Engineer, and one of the people my team relies on for backend architecture decisions — also owning infrastructure-as-code and contributing to the frontend.",
+  "headline": "Software Engineer focused on backend architecture and distributed systems — three-plus years owning a production domain end to end, from its architecture decisions to its infrastructure-as-code and incident response.",
   "oneLiner": "I own a domain end to end — the decision, the code, and the pager.",
   "quote": "A fix that doesn't explain the root cause is just a delay until the next incident.",
   "about": [
-    "I'm a software engineer who came into the field by deliberate choice, not by degree: in 2022 I left a production/mechanical engineering career to retrain as a software engineer, and started my first professional role in February 2023. Inside that short a window, I became one of the people my team relies on for backend architecture decisions: I was the one who kept writing the decision documents (ADRs) when the team faced structural choices, and the one who ended up owning the domain's infrastructure end to end because nobody else did. I work across backend, infrastructure-as-code, and — in smaller doses — frontend, but the throughline is architectural decision-making under real production constraints.",
+    "I'm a software engineer who came into the field by deliberate choice, not by degree: in 2022 I left a production/mechanical engineering career to retrain as a software engineer, and started my first professional role in February 2023. Inside that short a window — three and a half years at Dynamox, until October 2026 — I became one of the people my team relied on for backend architecture decisions: I was the one who kept writing the decision documents (ADRs) when the team faced structural choices, and the one who ended up owning the domain's infrastructure end to end because nobody else did. I work across backend, infrastructure-as-code, and — in smaller doses — frontend, but the throughline is architectural decision-making under real production constraints.",
     "I don't optimize for the number of technologies I've touched. I optimize for whether a decision, once made, survives contact with production — and for writing it down well enough that the next person doesn't have to re-litigate it."
   ],
   "philosophy": [
@@ -149,7 +149,7 @@ export const profile: Profile = {
     {
       "year": "Today",
       "label": "Architecture, distributed systems, and incident response",
-      "detail": "One of the people my team relies on for backend architecture decisions — someone who authors structural decisions and owns what happens when they fail in production."
+      "detail": "Carrying forward three-plus years as one of the people a product team relied on for backend architecture decisions — someone who authors structural decisions and owns what happens when they fail in production."
     },
     {
       "year": "2026",
@@ -162,9 +162,9 @@ export const profile: Profile = {
       "detail": "Built a legacy-compatibility proxy and a transactional-outbox pipeline to eliminate a class of silent data-loss bugs; planned and executed a high-risk production messaging migration with zero data loss."
     },
     {
-      "year": "2023–Present",
+      "year": "2023–2026",
       "label": "Deciding to rebuild the domain's core legacy service",
-      "detail": "Chose a modular monolith over a full microservices rewrite for the domain's central legacy service, then drove the incremental, zero-downtime migration it made possible — still ongoing today."
+      "detail": "Chose a modular monolith over a full microservices rewrite for the domain's central legacy service, then drove the incremental, zero-downtime migration it made possible — still ongoing when I left Dynamox in October 2026."
     },
     {
       "year": "2022–2023",
@@ -214,16 +214,16 @@ export const companies: Company[] = [
     "id": "dynamox",
     "name": "Dynamox",
     "role": "Software Engineer",
-    "period": "2023 – Present",
+    "period": "2023 – 2026",
     "periodStartYear": 2023,
     "location": "Florianópolis, Brazil",
     "domains": [
       "industrial-inspection"
     ],
-    "summary": "Industrial monitoring and inspection company where I became one of the people my team relies on for backend architecture decisions, owning backend development, production infrastructure, and incident response for three-plus years.",
+    "summary": "Industrial monitoring and inspection company where I became one of the people my team relied on for backend architecture decisions, owning backend development, production infrastructure, and incident response for three-plus years.",
     "phase": "Becoming one of the team's go-to people for architecture and distributed-systems decisions",
     "overview": [
-      "Dynamox builds an industrial condition-monitoring and inspection platform. I joined in 2023 and work on the team that owns the inspection domain — inspection routes, checklists, inspection cycles, and the anomaly/adherence indicators built on top of them — across backend, infrastructure, and, in smaller doses, the front end."
+      "Dynamox builds an industrial condition-monitoring and inspection platform. I joined in March 2023 and, until October 2026, worked on the team that owns the inspection domain — inspection routes, checklists, inspection cycles, and the anomaly/adherence indicators built on top of them — across backend, infrastructure, and, in smaller doses, the front end."
     ],
     "businessDomain": [
       "Industrial predictive maintenance and asset inspection: field teams plan inspection routes, complete checklists against equipment (often via an offline-first mobile app), and the platform tracks adherence and anomalies so maintenance teams can act before a failure happens. The core technical tension is keeping a high-write transactional system (checklists, responses, attachments) consistent while also serving increasingly heavy analytical needs (adherence indicators, management dashboards) — without either one degrading the other."
@@ -443,7 +443,7 @@ export const cases: CaseStudy[] = [
     "title": "Deciding and sequencing the rewrite of a legacy monolith",
     "company": "dynamox",
     "category": "architecture",
-    "summary": "Authored and sequenced the decision to rewrite the domain's most critical legacy service as a modular monolith; the pattern has held for 2+ years and is still guiding an ongoing, zero-downtime incremental migration.",
+    "summary": "Authored and sequenced the decision to rewrite the domain's most critical legacy service as a modular monolith; the pattern held for nearly three years and was still guiding the ongoing, zero-downtime incremental migration when I left in October 2026.",
     "capabilities": [
       "System Design",
       "Technical Decision Making",
@@ -458,7 +458,7 @@ export const cases: CaseStudy[] = [
     "difficulty": "high",
     "ownership": "led",
     "customerFacing": "No",
-    "period": "2023 – Present",
+    "period": "2023 – 2026",
     "readingTime": "3 min",
     "sections": [
       {
@@ -520,8 +520,8 @@ export const cases: CaseStudy[] = [
         "title": "Impact",
         "paras": [],
         "bullets": [
-          "The architecture pattern has held for more than two years and is still guiding the ongoing incremental migration from the legacy service to its successor; it also became the foundation for the next major architectural decision in the domain (see Founding a reporting service on an analytical warehouse).",
-          "Migrated dozens of business sub-domains so far (routes, checklists, cycles, and more) with no perceptible downtime, via gradual feature-flag rollout across environments — the remaining sub-domains are still in progress.",
+          "The architecture pattern held for nearly three years and, when I left in October 2026, was still guiding the ongoing incremental migration from the legacy service to its successor; it also became the foundation for the next major architectural decision in the domain (see Founding a reporting service on an analytical warehouse).",
+          "Migrated dozens of business sub-domains (routes, checklists, cycles, and more) with no perceptible downtime, via gradual feature-flag rollout across environments — the remaining sub-domains were still in progress when I left.",
           "Established decide-in-writing-first as the team's default for structural changes, referenced in every later architecture decision."
         ],
         "tables": []
@@ -1056,7 +1056,7 @@ export const cases: CaseStudy[] = [
     "difficulty": "medium",
     "ownership": "autonomous",
     "customerFacing": "No",
-    "period": "2023 – Present",
+    "period": "2023 – 2026",
     "readingTime": "2 min",
     "sections": [
       {
