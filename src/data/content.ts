@@ -38,6 +38,7 @@ export interface Company {
   name: string;
   role: string;
   period: string;
+  duration: string;
   periodStartYear: number;
   location: string;
   domains: string[];
@@ -214,7 +215,8 @@ export const companies: Company[] = [
     "id": "dynamox",
     "name": "Dynamox",
     "role": "Software Engineer",
-    "period": "2023 – 2026",
+    "period": "Mar 2023 – Oct 2026",
+    "duration": "3 yrs 8 mos",
     "periodStartYear": 2023,
     "location": "Florianópolis, Brazil",
     "domains": [
@@ -313,7 +315,7 @@ export const cases: CaseStudy[] = [
     "title": "Repairing a status field that had drifted from its own source of truth",
     "company": "dynamox",
     "category": "debugging",
-    "summary": "An enterprise customer's asset hierarchy was showing alert states that contradicted the inspections behind them, to the point that their leadership was questioning the alert volume. I found the write path that let the state drift, fixed it, and built a dry-runnable repair command for the rows already wrong — then, reviewing my own pull request, found that my forward fix had introduced a fresh drift path of its own and corrected it before merge.",
+    "summary": "An enterprise customer's asset hierarchy was showing alert states that contradicted the inspections behind them. I found the write path that let the state drift, fixed it, and built a dry-runnable repair command for the rows already wrong — then, reviewing my own pull request, found that my forward fix had introduced a fresh drift path of its own and corrected it before merge.",
     "capabilities": [
       "Reliability",
       "Backend Engineering",
@@ -347,7 +349,7 @@ export const cases: CaseStudy[] = [
         "id": "problem",
         "title": "What problem existed",
         "paras": [
-          "The platform shows a hierarchy of a customer's industrial assets, and each node carries the alert state of the inspections beneath it. An enterprise customer reported that the hierarchy was flagging assets as abnormal when the most recent inspection of the underlying checklist had recorded a normal condition. Their own leadership was asking why so many alerts were showing, and the answer was that a lot of them weren't real.",
+          "The platform shows a hierarchy of a customer's industrial assets, and each node carries the alert state of the inspections beneath it. An enterprise customer reported that the hierarchy was flagging assets as abnormal when the most recent inspection of the underlying checklist had recorded a normal condition — alerts that, on inspection, were no longer real.",
           "The state shown in the tree comes from a denormalized alert field on the checklist entity, kept up to date by the answer-submission flow and published downstream as an event. There is more than one way to answer a checklist, and one of them — the path for \"inspected and no anomalies found\" — created the answer, updated the inspection cycle, and published its event, but never touched the alert field on the entity itself.",
           "The consequence is a field that only moves in one direction. A checklist that had ever raised an alert kept displaying it forever, no matter how many normal inspections followed. The alert state and the answers it was supposed to summarize were free to disagree indefinitely, and nothing in the system noticed."
         ],
@@ -710,7 +712,7 @@ export const cases: CaseStudy[] = [
         "id": "problem",
         "title": "What problem existed",
         "paras": [
-          "The domain's legacy checklist service persisted a field inspector's answers and published a corresponding event as two separate steps against two separate systems, with no shared transaction between them. When the two steps disagreed — the write succeeded but the event was lost, or vice versa — the failure was silent: nothing crashed, nothing alerted, and the first signal was a customer noticing wrong data days later. Two concrete, customer-facing incidents traced back to exactly this: an adherence report showing incorrect completion data, and a case where an inspector had genuinely completed a route (using a \"no anomalies found\" answer path) but the platform showed no answer at all — with the customer's own field team frustrated at being penalized for work they had actually done. On top of the reliability gap, the legacy write path enforced almost none of the domain's business rules at the point where answers were accepted, so invalid or inconsistent data could get in largely unchecked."
+          "The domain's legacy checklist service persisted a field inspector's answers and published a corresponding event as two separate steps against two separate systems, with no shared transaction between them. When the two steps disagreed — the write succeeded but the event was lost, or vice versa — the failure was silent: nothing crashed, nothing alerted, and the first signal was a customer noticing wrong data days later. Two concrete, customer-facing incidents traced back to exactly this: an adherence report showing incorrect completion data, and a case where an inspector had genuinely completed a route (using a \"no anomalies found\" answer path) but the platform showed no answer at all, so completed work was reported as missing. On top of the reliability gap, the legacy write path enforced almost none of the domain's business rules at the point where answers were accepted, so invalid or inconsistent data could get in largely unchecked."
         ],
         "bullets": [],
         "tables": []
@@ -970,14 +972,14 @@ export const cases: CaseStudy[] = [
         "id": "decision",
         "title": "How I approached it",
         "paras": [
-          "The design decision — one owning service recomputes the metric from source, every other service only signals that a route is stale, and the signals are deduplicated in a recalculation queue keyed by route and cycle — was authored by another engineer. My part in that phase was as the counterpart she worked the design against: the recalculation worker was going to live in a service I work in, so I walked through how its worker model behaved and where an idempotent recompute would sit in it. The decision was hers; the constraints of the service it landed in were mine to explain.",
+          "The design decision — one owning service recomputes the metric from source, every other service only signals that a route is stale, and the signals are deduplicated in a recalculation queue keyed by route and cycle — was authored by another engineer. My part in that phase was as the counterpart the design was worked against: the recalculation worker was going to live in a service I worked in, so I walked through how its worker model behaved and where an idempotent recompute would sit in it. The decision was theirs; the constraints of the service it landed in were mine to explain.",
           "What I then owned:",
           "Both defects were diagnosed, written up with root cause and reproduction steps, and fixed within two days of being found."
         ],
         "bullets": [
           "Validated and migrated one of the two producers. The existing consumer for inspection-point events was assumed to be maintaining the route's asset projection correctly, but had never been checked scenario by scenario. I verified create, update and delete behaviour against the real projection — including moving a single inspection point between assets inside and outside a route — and then converted it from computing the metric to upserting into the recalculation queue.",
           "Deleted the ordering workaround the new design made unnecessary. Once the queue deduplicated by route and cycle, idempotency no longer depended on events arriving in order, so the entire re-partitioning layer became dead weight. I removed the proxy consumer that re-published to the ordered topic and the ordered consumer reading from it, putting the asset-hierarchy consumer back on the original topic and removing the second Kafka hop's lag.",
-          "Found the alert-leak defect under load testing. The worker recomputed each cycle's alert counters from the `alerts` field on the checklist definition rather than from the answers recorded inside that cycle for that route. Since one checklist can belong to many routes, an alert raised on a single route was written into the cycles of every route sharing that checklist. Deleting an asset present in multiple routes triggered exactly that recompute, which is how it surfaced. The fix scoped the counters to the answers within the active cycle window for that route, matching what the answer-submission path already did.",
+          "Found the alert-leak defect under load testing. The worker recomputed each cycle's alert counters from the alert field on the checklist definition rather than from the answers recorded inside that cycle for that route. Since one checklist can belong to many routes, an alert raised on a single route was written into the cycles of every route sharing that checklist. Deleting an asset present in multiple routes triggered exactly that recompute, which is how it surfaced. The fix scoped the counters to the answers within the active cycle window for that route, matching what the answer-submission path already did.",
           "Found the empty-cycle defect in staging. The rule deciding whether a cycle counts as \"justified\" compared justified items against total items. When an asset was deleted, its items were soft-deleted, the worker recomputed the cycle to zero items, and the comparison became `0 === 0` — true. Cycles that had simply been emptied were being marked as justified, inflating the justification metrics and hiding routes that had genuinely gone uninspected. The fix was a guard requiring at least one recorded answer before a cycle can be justified; because justifying an answer increments the answer count, a genuinely justified cycle always passes it and an emptied one never does. The rule was shared with the answer-submission flow, so the correction applied to both paths."
         ],
         "tables": []
@@ -1176,7 +1178,7 @@ export const cases: CaseStudy[] = [
         "id": "problem",
         "title": "What problem existed",
         "paras": [
-          "The domain's backend runs across many replicas and applies database schema migrations automatically on startup during deploys. During a routine deploy, every screen in the domain became unresponsive for roughly 18 minutes during peak hours. There was no automated alert; the incident was detected reactively, through a customer report."
+          "The domain's backend runs across many replicas and applies database schema migrations automatically on startup during deploys. During a routine deploy, every screen in the domain became unresponsive. There was no automated alert; the incident was detected reactively, through a customer report."
         ],
         "bullets": [],
         "tables": []
@@ -1196,7 +1198,7 @@ export const cases: CaseStudy[] = [
         "id": "decision",
         "title": "How I approached it",
         "paras": [
-          "I traced the outage from symptom to mechanism instead of stopping at the first plausible explanation. The investigation found that a single migration executed two separate schema-altering statements against two heavily-read tables inside one transaction, with no lock timeout configured, triggered independently by each of roughly twenty replicas at deploy time. The resulting exclusive lock queued all traffic touching those tables across the whole backend.",
+          "I traced the outage from symptom to mechanism instead of stopping at the first plausible explanation. The investigation found that a single migration executed two separate schema-altering statements against two heavily-read tables inside one transaction, with no lock timeout configured, triggered independently by each of the service's many replicas at deploy time. The resulting exclusive lock queued all traffic touching those tables across the whole backend.",
           "I chose to split the migration into two — one table per migration — and ship that as the actual fix, rather than simply restarting pods or rolling back without understanding why the freeze had happened, even though that meant taking longer to close the incident out."
         ],
         "bullets": [],
@@ -1719,7 +1721,7 @@ export const notes: Note[] = [
         "id": "a-worked-example",
         "title": "A worked example",
         "paras": [
-          "In one incident I investigated, a service became fully unresponsive for about 18 minutes during peak hours, discovered only through a customer report — no alert fired. The visible symptom (every screen frozen) didn't point anywhere obvious. Restarting the affected pods would very likely have \"fixed\" it, at least until the next deploy triggered the same sequence. Tracing it further found the actual mechanism: a single database migration executing two schema-altering statements in one transaction, with no lock timeout, triggered independently by roughly twenty replicas at once — the resulting lock queued all traffic touching the affected tables. The fix that mattered wasn't restarting anything; it was splitting the migration and setting a default lock timeout for future ones, plus recommending an alert for the observability gap that let the incident go undetected until a customer noticed."
+          "In one incident I investigated, a service became fully unresponsive, discovered only through a customer report — no alert fired. The visible symptom (every screen frozen) didn't point anywhere obvious. Restarting the affected pods would very likely have \"fixed\" it, at least until the next deploy triggered the same sequence. Tracing it further found the actual mechanism: a single database migration executing two schema-altering statements in one transaction, with no lock timeout, triggered independently by many replicas at once — the resulting lock queued all traffic touching the affected tables. The fix that mattered wasn't restarting anything; it was splitting the migration and setting a default lock timeout for future ones, plus recommending an alert for the observability gap that let the incident go undetected until a customer noticed."
         ],
         "bullets": [],
         "tables": []
