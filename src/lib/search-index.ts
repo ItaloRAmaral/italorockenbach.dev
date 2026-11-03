@@ -96,7 +96,7 @@ export function buildIndex(): SearchDoc[] {
     docs.push({
       kind: "company",
       title: company.name,
-      sub: `${company.role} · ${company.period}`,
+      sub: `${company.role} · ${company.period} · ${company.duration}`,
       href: `/companies/${company.id}`,
       head: [company.name, company.role, company.summary, ...company.domainLabels, ...company.technologies].join(" "),
       passages: [

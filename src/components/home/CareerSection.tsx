@@ -23,7 +23,9 @@ export function CareerSection({ companies }: CareerSectionProps) {
           >
             <div className={styles.top}>
               <span className={styles.name}>{company.name}</span>
-              <span className={styles.period}>{company.period}</span>
+              <span className={styles.period}>
+                {company.period} · {company.duration}
+              </span>
             </div>
             <div className={styles.desc}>{company.summary}</div>
           </Link>

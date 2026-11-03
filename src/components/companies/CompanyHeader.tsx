@@ -8,7 +8,7 @@ interface CompanyHeaderProps {
 export function CompanyHeader({ company }: CompanyHeaderProps) {
   const facts: Array<[string, string]> = [
     ["role", company.role],
-    ["period", company.period],
+    ["period", `${company.period} · ${company.duration}`],
     ["domain", company.domainLabels.join(", ")],
   ];
 

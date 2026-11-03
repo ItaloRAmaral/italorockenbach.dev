@@ -42,6 +42,8 @@ export interface Company {
   name: string;
   role: string;
   period: string;
+  /** e.g. "3 yrs 8 mos" — computed by the generator from the period. */
+  duration: string;
   location: string;
   domains: string[];
   domainLabels: string[];

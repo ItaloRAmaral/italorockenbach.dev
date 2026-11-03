@@ -98,7 +98,7 @@ export async function GET() {
     "## Companies",
     "",
     ...companies.map(
-      (company) => `- [${company.name}](${base}/companies/${company.id}): ${company.role}, ${company.period}.`,
+      (company) => `- [${company.name}](${base}/companies/${company.id}): ${company.role}, ${company.period} (${company.duration}).`,
     ),
     "",
     "## Capabilities claimed",

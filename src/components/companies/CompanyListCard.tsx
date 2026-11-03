@@ -12,7 +12,9 @@ export function CompanyListCard({ company, caseCount }: CompanyListCardProps) {
     <Link href={`/companies/${company.id}`} className={styles.card}>
       <div className={styles.top}>
         <span className={styles.name}>{company.name}</span>
-        <span className={styles.period}>{company.period}</span>
+        <span className={styles.period}>
+          {company.period} · {company.duration}
+        </span>
         <span className={styles.meta}>
           {caseCount} case {caseCount === 1 ? "study" : "studies"} ·{" "}
           {company.technologies.length} technologies
