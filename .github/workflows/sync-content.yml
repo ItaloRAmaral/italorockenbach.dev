@@ -13,20 +13,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout engineering-record
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Checkout professional-knowledge-base
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: ItaloRAmaral/professional-knowledge-base
           token: ${{ secrets.PERSONAL_GH_PAT }}
           path: knowledge-base-v2
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
           cache: pnpm
 
       - name: Install knowledge-base-v2 generator dependencies
