@@ -132,7 +132,7 @@ export const profile: Profile = {
   "oneLiner": "I own a domain end to end — the decision, the code, and the pager.",
   "quote": "A fix that doesn't explain the root cause is just a delay until the next incident.",
   "about": [
-    "I'm a software engineer who came into the field by deliberate choice, not by degree: in 2022 I left a production/mechanical engineering career to retrain as a software engineer, and started my first professional role in February 2023. Inside that short a window — three and a half years at Dynamox, until October 2026 — I became one of the people my team relied on for backend architecture decisions: I was the one who kept writing the decision documents (ADRs) when the team faced structural choices, and the one who ended up owning the domain's infrastructure end to end because nobody else did. I work across backend, infrastructure-as-code, and — in smaller doses — frontend, but the throughline is architectural decision-making under real production constraints.",
+    "I'm a software engineer who came into the field by deliberate choice, not by degree: I graduated in production engineering and, in 2022, chose to retrain as a software engineer, and started my first professional role in February 2023. Inside that short a window — three years and nine months at Dynamox, until October 2026 — I became one of the people my team relied on for backend architecture decisions: I was the one who kept writing the decision documents (ADRs) when the team faced structural choices, and the one who ended up owning the domain's infrastructure end to end because nobody else did. I work across backend, infrastructure-as-code, and — in smaller doses — frontend, but the throughline is architectural decision-making under real production constraints.",
     "I don't optimize for the number of technologies I've touched. I optimize for whether a decision, once made, survives contact with production — and for writing it down well enough that the next person doesn't have to re-litigate it."
   ],
   "philosophy": [
@@ -169,8 +169,8 @@ export const profile: Profile = {
     },
     {
       "year": "2022–2023",
-      "label": "Transitioning from production engineering into software engineering",
-      "detail": "Decided to leave a production/mechanical engineering career for software engineering, spent 2022 in full-time full-stack study, and landed the first professional software engineering role in February 2023."
+      "label": "Moving from a production engineering degree into software engineering",
+      "detail": "Graduated in production engineering (mechanical track) and chose software engineering instead of a career in that field; spent 2022 in full-time full-stack study, and landed the first professional software engineering role in February 2023."
     }
   ],
   "strengths": [
@@ -215,8 +215,8 @@ export const companies: Company[] = [
     "id": "dynamox",
     "name": "Dynamox",
     "role": "Software Engineer",
-    "period": "Mar 2023 – Oct 2026",
-    "duration": "3 yrs 8 mos",
+    "period": "Feb 2023 – Oct 2026",
+    "duration": "3 yrs 9 mos",
     "periodStartYear": 2023,
     "location": "Florianópolis, Brazil",
     "domains": [
@@ -225,7 +225,7 @@ export const companies: Company[] = [
     "summary": "Industrial monitoring and inspection company where I became one of the people my team relied on for backend architecture decisions, owning backend development, production infrastructure, and incident response for three-plus years.",
     "phase": "Becoming one of the team's go-to people for architecture and distributed-systems decisions",
     "overview": [
-      "Dynamox builds an industrial condition-monitoring and inspection platform. I joined in March 2023 and, until October 2026, worked on the team that owns the inspection domain — inspection routes, checklists, inspection cycles, and the anomaly/adherence indicators built on top of them — across backend, infrastructure, and, in smaller doses, the front end."
+      "Dynamox builds an industrial condition-monitoring and inspection platform. I joined in February 2023 and, until October 2026, worked on the team that owns the inspection domain — inspection routes, checklists, inspection cycles, and the anomaly/adherence indicators built on top of them — across backend, infrastructure, and, in smaller doses, the front end."
     ],
     "businessDomain": [
       "Industrial predictive maintenance and asset inspection: field teams plan inspection routes, complete checklists against equipment (often via an offline-first mobile app), and the platform tracks adherence and anomalies so maintenance teams can act before a failure happens. The core technical tension is keeping a high-write transactional system (checklists, responses, attachments) consistent while also serving increasingly heavy analytical needs (adherence indicators, management dashboards) — without either one degrading the other."
